@@ -42,12 +42,12 @@
 // PC6, PC7, PC8 used for Roll,  TIM_OCPolarity_High
 // PA7, PB0, PB1 used for RollN, TIM_OCPolarity_High
 
-#define ROLL_A_GPIO   GPIOC
-#define ROLL_A_PIN    GPIO_Pin_6
-#define ROLL_B_GPIO   GPIOC
-#define ROLL_B_PIN    GPIO_Pin_7
-#define ROLL_C_GPIO   GPIOC
-#define ROLL_C_PIN    GPIO_Pin_8
+#define ROLL_A_GPIO   GPIOB
+#define ROLL_A_PIN    GPIO_Pin_1
+#define ROLL_B_GPIO   GPIOB
+#define ROLL_B_PIN    GPIO_Pin_0
+#define ROLL_C_GPIO   GPIOA
+#define ROLL_C_PIN    GPIO_Pin_7
 
 #define ROLL_AN_GPIO  GPIOA
 #define ROLL_AN_PIN   GPIO_Pin_7
@@ -59,13 +59,22 @@
 // TIM1 Pitch
 // PA8,  PA9,  PA10 used for Pitch,  TIM_OCPolarity_High
 // PB13, PB14, PB15 used for PitchN, TIM_OCPolarity_High
-
+/**
 #define PITCH_A_GPIO    GPIOA
 #define PITCH_A_PIN     GPIO_Pin_8
 #define PITCH_B_GPIO    GPIOA
 #define PITCH_B_PIN     GPIO_Pin_9
 #define PITCH_C_GPIO    GPIOA
 #define PITCH_C_PIN     GPIO_Pin_10
+*/
+//Pitch
+//PB1,PB0,PA1 = TIM3-CH4,TIM3-CH3,TIM3-CH2
+#define PITCH_A_GPIO    GPIOB
+#define PITCH_A_PIN     GPIO_Pin_1
+#define PITCH_B_GPIO    GPIOB
+#define PITCH_B_PIN     GPIO_Pin_0
+#define PITCH_C_GPIO    GPIOA
+#define PITCH_C_PIN     GPIO_Pin_1
 
 #define PITCH_AN_GPIO   GPIOB
 #define PITCH_AN_PIN    GPIO_Pin_13
@@ -545,9 +554,14 @@ void pwmMotorDriverInit(void)
     }
 
     
-
+/**
+ * STrom32 PWMMOTOR Vctor
+    Mot0: Pitch motor to point the camera up/down   =   PB1,PB0,PA1 = TIM3-CH4,TIM3-CH3,TIM3-CH2
+    Mot1: Roll motor to stabilize the horizon       =   PA6,PA3,PA2 = TIM3-CH1,TIM2-CH4,TIM2-CH3
+    Mot2: Yaw motor to turn the camera left/right   =   PB9,PA1,PB8 = TIM4-CH4,TIM2-CH2,TIM4-CH3
+ */
     ///////////////////////////////////
-
+/*
     // Roll PWM Timer Initialization here
 
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
@@ -580,19 +594,23 @@ void pwmMotorDriverInit(void)
         TIM_CtrlPWMOutputs(TIM8, ENABLE);
     }
     __enable_irq_nested();
-
+*/
 
     ///////////////////////////////////
     // Pitch PWM Timer Initialization here
-
+//PB1,PB0
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-
-    GPIO_InitStructure.GPIO_Pin   = PITCH_A_PIN | PITCH_B_PIN | PITCH_C_PIN;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;       
+    GPIO_InitStructure.GPIO_Pin   = PITCH_A_PIN | PITCH_B_PIN;
+    GPIO_Init(GPIOB, &GPIO_InitStructure);
+//PA1    
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;       
+    GPIO_InitStructure.GPIO_Pin   = PITCH_C_PIN;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-    GPIO_InitStructure.GPIO_Pin   = PITCH_AN_PIN | PITCH_BN_PIN | PITCH_CN_PIN;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
+ //   GPIO_InitStructure.GPIO_Pin   = PITCH_AN_PIN | PITCH_BN_PIN | PITCH_CN_PIN;
+//    GPIO_Init(GPIOB, &GPIO_InitStructure);
 
     irqCnt[PITCH] = 0;
     maxCnt[PITCH] = 0;
@@ -616,7 +634,7 @@ void pwmMotorDriverInit(void)
 
     ///////////////////////////////////
     // Yaw PWM Timers Initialization here
-
+/*
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
 
@@ -650,7 +668,7 @@ void pwmMotorDriverInit(void)
         TIM_CtrlPWMOutputs(TIM4, ENABLE);
     }
     __enable_irq_nested();
-
+*/
     ///////////////////////////////////
 
     pwmMotorDriverInitDone = true;

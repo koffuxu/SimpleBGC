@@ -276,14 +276,18 @@ void systemInit(void)
 
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);  // 2 bits for pre-emption priority, 2 bits for subpriority
 
+    cliPrintF("begin init pwm motor\r\n");
     pwmMotorDriverInit();
 
     cliInit();
     gpioInit();
 
+  
     LED2_ON;
+    
+    LED1_ON;
 
-    delay(10000);  // 10 seconds of 20 second delay for sensor stabilization
+    delay(1000);  // 10 seconds of 20 second delay for sensor stabilization
 
     if (GetVCPConnectMode() != eVCPConnectReset)
     {
@@ -303,12 +307,12 @@ void systemInit(void)
     }
 
 #if defined(__DATE__) && defined(__TIME__)
-    cliPrintF("\nBGC32 Firmware V%s, Build Date " __DATE__ " "__TIME__" \n", __BGC32_VERSION);
+    cliPrintF("\r\nBGC32 Firmware V%s, Build Date\r\n" __DATE__ " "__TIME__" \n", __BGC32_VERSION);
 #endif
 
     if ((RCC->CR & RCC_CR_HSERDY) != RESET)
     {
-        cliPrintF("\nRunning on external HSE clock, clock rate is %dMHz\n", SystemCoreClock / 1000000);
+        cliPrintF("\r\nRunning on external HSE clock, clock rate is %dMHz\r\n", SystemCoreClock / 1000000);
     }
     else
     {
@@ -317,9 +321,9 @@ void systemInit(void)
 
     delay(10000);  // Remaining 10 seconds of 20 second delay for sensor stabilization - probably not long enough..
 
-    LED1_ON;
+    LED1_OFF;
 
-    i2cInit(I2C2);
+    /*i2cInit(I2C2);
     rcInit();
     timingFunctionsInit();
 
@@ -331,7 +335,7 @@ void systemInit(void)
 
     orientIMU();
 
-    initMPU6050();
+    initMPU6050();*/
     // initMag();
 }
 

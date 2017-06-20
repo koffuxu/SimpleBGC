@@ -40,11 +40,17 @@
 // LED Defines
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * STrom32 LED0(GREEN)=PB12 LED1(RED)=PB13
+ */
 #define LED1_GPIO    GPIOB
 #define LED1_PIN     GPIO_Pin_12
 
-#define LED2_GPIO    GPIOA
-#define LED2_PIN     GPIO_Pin_3
+#define LED2_GPIO    GPIOB
+#define LED2_PIN     GPIO_Pin_13
+
+//#define LED2_GPIO    GPIOA
+//#define LED2_PIN     GPIO_Pin_3
 
 ///////////////////////////////////////
 

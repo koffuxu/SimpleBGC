@@ -64,13 +64,20 @@ int main(void)
 {
     uint32_t currentTime;
 
+    u8 heartbeat = 0;
     systemInit();
 
-    initOrientation();
+   //kf initOrientation();
 
     systemReady = true;
 
-    while (1)
+    while (1){
+        cliPrintF("beat %d\r\n",heartbeat);
+        delay(100); //1s
+        heartbeat++;
+        
+    }
+    while (0)
     {
         ///////////////////////////////
 

@@ -141,6 +141,7 @@ void cliInit(void)
 {
     Set_System();
     Usart4Init();
+    uart1_init();
 
     printUSART("USART4 ready\n");
 
