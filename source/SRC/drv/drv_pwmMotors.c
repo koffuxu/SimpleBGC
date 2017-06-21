@@ -74,7 +74,7 @@
 #define PITCH_B_GPIO    GPIOB
 #define PITCH_B_PIN     GPIO_Pin_0
 #define PITCH_C_GPIO    GPIOA
-#define PITCH_C_PIN     GPIO_Pin_1
+#define PITCH_C_PIN     GPIO_Pin_7
 
 #define PITCH_AN_GPIO   GPIOB
 #define PITCH_AN_PIN    GPIO_Pin_13
@@ -199,8 +199,9 @@ void TIM8_UP_IRQHandler(void) // roll axis
 ///////////////////////////////////////////////////////////////////////////////
 //  TIM1 IRQ Handler (PITCH)
 ///////////////////////////////////////////////////////////////////////////////
+void TIM3_IRQHandler(void)
 
-void TIM1_UP_IRQHandler(void) // pitch axis
+//void TIM1_UP_IRQHandler(void) // pitch axis
 {
 		 unsigned short cnt ;
     TIM1->SR &= ~TIM_SR_UIF; // clear UIF flag
@@ -556,7 +557,7 @@ void pwmMotorDriverInit(void)
     
 /**
  * STrom32 PWMMOTOR Vctor
-    Mot0: Pitch motor to point the camera up/down   =   PB1,PB0,PA1 = TIM3-CH4,TIM3-CH3,TIM3-CH2
+    Mot0: Pitch motor to point the camera up/down   =   PB1,PB0,PA7 = TIM3-CH4,TIM3-CH3,TIM3-CH2
     Mot1: Roll motor to stabilize the horizon       =   PA6,PA3,PA2 = TIM3-CH1,TIM2-CH4,TIM2-CH3
     Mot2: Yaw motor to turn the camera left/right   =   PB9,PA1,PB8 = TIM4-CH4,TIM2-CH2,TIM4-CH3
  */
@@ -603,7 +604,7 @@ void pwmMotorDriverInit(void)
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;       
     GPIO_InitStructure.GPIO_Pin   = PITCH_A_PIN | PITCH_B_PIN;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
-//PA1    
+//PA7    
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;       
     GPIO_InitStructure.GPIO_Pin   = PITCH_C_PIN;
@@ -611,23 +612,43 @@ void pwmMotorDriverInit(void)
 
  //   GPIO_InitStructure.GPIO_Pin   = PITCH_AN_PIN | PITCH_BN_PIN | PITCH_CN_PIN;
 //    GPIO_Init(GPIOB, &GPIO_InitStructure);
+//GPIO Remap??查询UM，不需要映射
+/**
+*TIM3_REMAP[1:0] = 00 TIM3_REMAP[1:0] = 10 TIM3_REMAP[1:0] = 11
+复用功能	(没有重映像) (部分重映像) (完全重映像)(1)
+TIM3_CH1 	PA6 		PB4 		PC6
+TIM3_CH2 	PA7 		PB5 		PC7
+TIM3_CH3 		  PB0 				PC8
+TIM3_CH4 		  PB1 				PC9
+*/
 
-    irqCnt[PITCH] = 0;
-    maxCnt[PITCH] = 0;
-    minCnt[PITCH] = PWM_PERIOD + 1;
 
-    timerPWMadvancedConfig(TIM1);
-
+    irqCnt[PITCH] = 0; //irqCnt[0] = 0;
+    maxCnt[PITCH] = 0; //maxCnt[0] = 0
+    minCnt[PITCH] = PWM_PERIOD + 1; //minCnt[0] = 1000 + 1
+/*
+*设置TIM3,ARR寄存值为1000，频率为18khz
+*/
+//    timerPWMadvancedConfig(TIM1);
+	  timerPWMadvancedConfig(TIM3);
+/**
+*	设置CNT值，决定占空比。
+*/
     TIM1->CNT = timer4timer5deadTimeDelay + 3 + PWM_PERIOD / 3;  // 416
 
-    setupPWMIrq(TIM1_UP_IRQn);
+//    setupPWMIrq(TIM1_UP_IRQn);
+	setupPWMIrq(TIM3_IRQn); //TIM3只有global IRQ
+
 
     __disable_irq_nested();
     {
 //        vu32 *tim1Enable = BB_PERIPH_ADDR(&(TIM1->CR1), 0);
 //        *tim1Enable = 1;
-			  TIM_Cmd(TIM1, ENABLE);
-        TIM_CtrlPWMOutputs(TIM1, ENABLE);
+		
+/*		TIM_Cmd(TIM1, ENABLE);
+        TIM_CtrlPWMOutputs(TIM1, ENABLE);*/
+		TIM_Cmd(TIM3, ENABLE);
+        TIM_CtrlPWMOutputs(TIM3, ENABLE);
     }
     __enable_irq_nested();
 
