@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_HD</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CMSIS;..\USER;..\FWlib\inc;..\FWlib\src;..\SRC;..\SRC\vcp;..\Libraries\STM32_USB-FS-Device_Driver\inc;..\SRC\drv;..\SRC\sensors;..\SRC\cli;..\SRC\calibration;..\SRC\vcp</IncludePath>
+              <IncludePath>..\CMSIS;..\USER;..\FWlib\inc;..\FWlib\src;..\SRC;..\SRC\vcp;..\Libraries\STM32_USB-FS-Device_Driver\inc;..\SRC\drv;..\SRC\sensors;..\SRC\cli;..\SRC\calibration;..\SRC\vcp;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -792,6 +792,26 @@
               <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\STM32_USB-FS-Device_Driver\src\usb_sil.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>SYSTEM</GroupName>
+          <Files>
+            <File>
+              <FileName>delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SYSTEM\delay\delay.c</FilePath>
+            </File>
+            <File>
+              <FileName>sys.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SYSTEM\sys\sys.c</FilePath>
+            </File>
+            <File>
+              <FileName>usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SYSTEM\usart\usart.c</FilePath>
             </File>
           </Files>
         </Group>

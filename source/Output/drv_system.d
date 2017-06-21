@@ -76,3 +76,4 @@
 ..\output\drv_system.o: ..\SRC\calibration\mpu6050Calibration.h
 ..\output\drv_system.o: ..\SRC\pointingCommands.h
 ..\output\drv_system.o: ..\SRC\utilities.h
+..\output\drv_system.o: ..\SYSTEM\sys\sys.h

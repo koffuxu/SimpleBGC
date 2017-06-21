@@ -67,15 +67,16 @@ int main(void)
     u8 heartbeat = 0;
     systemInit();
 
-   //kf initOrientation();
+   //need comfirm
+   initOrientation();
 
     systemReady = true;
 
     while (1){
-        cliPrintF("beat %d\r\n",heartbeat);
-        delay(100); //1s
-        heartbeat++;
-        
+        cliPrintF("heart beat %d\r\n",heartbeat);
+        //delay(100); //1s
+        delay_ms(1000);
+        heartbeat++;    
     }
     while (0)
     {

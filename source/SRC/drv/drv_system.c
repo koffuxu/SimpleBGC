@@ -35,7 +35,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "board.h"
-
+#include "sys.h"
 ///////////////////////////////////////////////////////////////////////////////
 
 // Cycle counter stuff - these should be defined by CMSIS, but they aren't
@@ -276,18 +276,18 @@ void systemInit(void)
 
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);  // 2 bits for pre-emption priority, 2 bits for subpriority
 
-    cliPrintF("begin init pwm motor\r\n");
+    
     pwmMotorDriverInit();
 
     cliInit();
     gpioInit();
 
+  LED2_ON;
+
   
-    LED2_ON;
-    
-    LED1_ON;
 
     delay(1000);  // 10 seconds of 20 second delay for sensor stabilization
+
 
     if (GetVCPConnectMode() != eVCPConnectReset)
     {
@@ -321,21 +321,23 @@ void systemInit(void)
 
     delay(10000);  // Remaining 10 seconds of 20 second delay for sensor stabilization - probably not long enough..
 
-    LED1_OFF;
+    LED2_OFF;
 
-    /*i2cInit(I2C2);
-    rcInit();
+    i2cInit(I2C2);
+    //TODO rcInit();
+    //≥ı ºªØTIM6
     timingFunctionsInit();
 
     BKPInit();
-
+    //need comfirm begin
     initFirstOrderFilter();
     initPID();
     initSinArray();
-
     orientIMU();
+    //need comfirm end
 
-    initMPU6050();*/
+    initMPU6050();
+    cliPrintF("systemInit finished!\r\n");
     // initMag();
 }
 
