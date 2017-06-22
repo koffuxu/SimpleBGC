@@ -36,6 +36,8 @@
 
 #include "board.h"
 #include "sys.h"
+//alitek
+#include "delay.h"
 ///////////////////////////////////////////////////////////////////////////////
 
 // Cycle counter stuff - these should be defined by CMSIS, but they aren't
@@ -257,8 +259,8 @@ void systemInit(void)
 
     // SysTick
     //SysTick_Config(SystemCoreClock / 1000);
-	//SYSTICK的时钟固定为HCLK时钟的1/8，Systick次数为8000？
-	SysTick_Config(SystemCoreClock / 8000);
+	//SYSTICK的时钟固定为HCLK时钟的1/8，Tick设置使用Alitek
+	delay_init();
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB |
                            RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO  |
@@ -349,7 +351,7 @@ void systemInit(void)
 
 void delayMicroseconds(uint32_t us)
 {
-    uint32_t elapsed = 0;
+  /*  uint32_t elapsed = 0;
     uint32_t lastCount = *DWT_CYCCNT;
 
     for (;;)
@@ -372,18 +374,22 @@ void delayMicroseconds(uint32_t us)
 
         // keep fractional microseconds for the next iteration
         elapsed %= usTicks;
-    }
+    }*/
+	delay_us(us);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Delay Milliseconds
 ///////////////////////////////////////////////////////////////////////////////
+//使用alitek接口
 
 void delay(uint32_t ms)
 {
-    while (ms--)
-        delayMicroseconds(1000);
+    //while (ms--)
+    //    delayMicroseconds(1000);
+	delay_ms(ms);
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 
