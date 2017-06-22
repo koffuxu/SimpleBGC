@@ -256,7 +256,9 @@ void systemInit(void)
     cycleCounterInit();
 
     // SysTick
-    SysTick_Config(SystemCoreClock / 1000);
+    //SysTick_Config(SystemCoreClock / 1000);
+	//SYSTICK的时钟固定为HCLK时钟的1/8，Systick次数为8000？
+	SysTick_Config(SystemCoreClock / 8000);
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB |
                            RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO  |

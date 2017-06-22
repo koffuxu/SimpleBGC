@@ -74,8 +74,8 @@ int main(void)
 
     while (1){
         cliPrintF("heart beat %d\r\n",heartbeat);
-        //delay(100); //1s
-        delay_ms(1000);
+        delay(100); //1s
+        //delay_ms(1000);
         heartbeat++;    
     }
     while (0)
