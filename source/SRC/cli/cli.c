@@ -177,6 +177,7 @@ void cliCom(void)
     if ((cliAvailable() && !validCliCommand))
     {
         cliQuery = getChar();
+        cliPrintF("get char is %c\r\n", cliQuery);
     }
 
     validCliCommand = false;

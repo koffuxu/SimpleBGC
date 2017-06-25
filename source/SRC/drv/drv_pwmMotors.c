@@ -547,6 +547,7 @@ void pwmMotorDriverInit(void)
 {
 	GPIO_InitTypeDef         GPIO_InitStructure;
 	
+       // cliPrintF("\r\nstart pwmMotorDriverInit\r\n");
     if (pwmMotorDriverInitDone)
     {
         forceMotorUpdate();
@@ -630,28 +631,42 @@ TIM3_CH4 		  PB1 				PC9
 *设置TIM3,ARR寄存值为1000，频率为18khz
 */
 //    timerPWMadvancedConfig(TIM1);
-	  timerPWMadvancedConfig(TIM3);
+	  timerPWMgeneralConfig(TIM3, TIM_OCPolarity_High);
+      setupPWMIrq(TIM3_IRQn);
+      
+          __disable_irq_nested();
+    {
+//        vu32 *tim5Enable = BB_PERIPH_ADDR(&(TIM5->CR1), 0);
+//        vu32 *tim4Enable = BB_PERIPH_ADDR(&(TIM4->CR1), 0);
+
+        TIM3->CNT = timer4timer5deadTimeDelay;
+//        *tim5Enable = 1;
+//        *tim4Enable = 1;
+		TIM_Cmd(TIM3, ENABLE);
+			
+        TIM_CtrlPWMOutputs(TIM3, ENABLE);
+    }
+    __enable_irq_nested();
 /**
 *	设置CNT值，决定占空比。
 */
+/*
     TIM1->CNT = timer4timer5deadTimeDelay + 3 + PWM_PERIOD / 3;  // 416
 
 //    setupPWMIrq(TIM1_UP_IRQn);
 	setupPWMIrq(TIM3_IRQn); //TIM3只有global IRQ
 
-
+    cliPrintF("before enable");
     __disable_irq_nested();
     {
 //        vu32 *tim1Enable = BB_PERIPH_ADDR(&(TIM1->CR1), 0);
 //        *tim1Enable = 1;
 		
-/*		TIM_Cmd(TIM1, ENABLE);
-        TIM_CtrlPWMOutputs(TIM1, ENABLE);*/
-		TIM_Cmd(TIM3, ENABLE);
-        TIM_CtrlPWMOutputs(TIM3, ENABLE);
+		TIM_Cmd(TIM1, ENABLE);
+        TIM_CtrlPWMOutputs(TIM1, ENABLE);
     }
     __enable_irq_nested();
-
+*/
 
     ///////////////////////////////////
     // Yaw PWM Timers Initialization here

@@ -72,13 +72,13 @@ int main(void)
 
     systemReady = true;
 
-    while (1){
+    while (0){
         cliPrintF("heart beat %d\r\n",heartbeat);
-        delay(100); //1s
+        delay(1000); //1s
         //delay_ms(1000);
         heartbeat++;    
     }
-    while (0)
+    while (1)
     {
         ///////////////////////////////
 
@@ -240,6 +240,7 @@ int main(void)
         }
 
         ////////////////////////////////
+
     }
 }
 

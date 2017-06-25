@@ -113,8 +113,8 @@ void SysTick_Handler(void)
     sysTickCycleCounter = *DWT_CYCCNT;
     sysTickUptime++;
 
-    if ((systemReady        == true)  &&
-            (mpu6050Calibrating == false)) // HJI && (magCalibrating     == false))
+    if ((systemReady        == true) /* &&
+            (mpu6050Calibrating == false)*/) // HJI && (magCalibrating     == false))
 
     {
         frameCounter++;
@@ -175,7 +175,11 @@ void SysTick_Handler(void)
         ///////////////////////////////
 
         if ((frameCounter % COUNT_1HZ) == 0)
+        {
             frame_1Hz = true;
+            //cliPrintF("heart beat sys tick hanler\r\n"); //bak for debug
+          
+        }
 
         ///////////////////////////////////
 
@@ -254,13 +258,15 @@ void timingSetup(void)
 
 void systemInit(void)
 {
+    u16 TIM3_CR1 = 0;
+    
     // Init cycle counter
     cycleCounterInit();
 
     // SysTick
-    //SysTick_Config(SystemCoreClock / 1000);
+    SysTick_Config(SystemCoreClock / 1000);
 	//SYSTICK的时钟固定为HCLK时钟的1/8，Tick设置使用Alitek
-	delay_init();
+	//delay_init();
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB |
                            RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO  |
@@ -281,17 +287,19 @@ void systemInit(void)
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);  // 2 bits for pre-emption priority, 2 bits for subpriority
 
     
-    pwmMotorDriverInit();
+ 
 
     cliInit();
+    pwmMotorDriverInit();
+    //for led
     gpioInit();
 
   LED2_ON;
 
   
 
-    delay(1000);  // 10 seconds of 20 second delay for sensor stabilization
-
+    delay(10000);  // 10 seconds of 20 second delay for sensor stabilization
+    TIM3_CR1 = TIM3->CR1;
 
     if (GetVCPConnectMode() != eVCPConnectReset)
     {
@@ -300,7 +308,7 @@ void systemInit(void)
 
         if (GetVCPConnectMode() == eVCPConnectData)
         {
-            cliPrintF("\r\nBGC32 firmware starting up, USB connected...\r\n");
+            cliPrintF("\r\nBGC32 firmware starting up, USB connected...TIM3->CR1 = %x\r\n",TIM3_CR1);
         }
     }
     else
@@ -322,10 +330,11 @@ void systemInit(void)
     {
         cliPrintF("\nERROR: Running on internal HSI clock, clock rate is %dMHz\n", SystemCoreClock / 1000000);
     }
-
-    delay(10000);  // Remaining 10 seconds of 20 second delay for sensor stabilization - probably not long enough..
-
     LED2_OFF;
+    delay(10000);  // Remaining 10 seconds of 20 second delay for sensor stabilization - probably not long enough..
+    LED2_ON;
+    LED1_ON;
+    
 
     i2cInit(I2C2);
     //TODO rcInit();
@@ -341,7 +350,9 @@ void systemInit(void)
     //need comfirm end
 
     initMPU6050();
-    cliPrintF("systemInit finished!\r\n");
+    systemReady = true;
+    cliPrintF("systemInit finished and system is ready!\r\n");
+    
     // initMag();
 }
 
@@ -351,7 +362,7 @@ void systemInit(void)
 
 void delayMicroseconds(uint32_t us)
 {
-  /*  uint32_t elapsed = 0;
+    uint32_t elapsed = 0;
     uint32_t lastCount = *DWT_CYCCNT;
 
     for (;;)
@@ -374,8 +385,8 @@ void delayMicroseconds(uint32_t us)
 
         // keep fractional microseconds for the next iteration
         elapsed %= usTicks;
-    }*/
-	delay_us(us);
+    }
+	//delay_us(us);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -385,9 +396,9 @@ void delayMicroseconds(uint32_t us)
 
 void delay(uint32_t ms)
 {
-    //while (ms--)
-    //    delayMicroseconds(1000);
-	delay_ms(ms);
+    while (ms--)
+       delayMicroseconds(1000);
+	//delay_ms(ms);
 }
 
 
